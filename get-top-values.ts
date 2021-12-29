@@ -32,8 +32,6 @@ async function getTopValues() {
 
     const coins: Coin[] = (await stackingData.json() as any).data;
 
-    // const coins: Coin[] = stackingFile.data;
-
     const valuesPerProject = coins.map(({ projects }) => (
         projects.map(({ asset, duration, sellOut, config, issueEndTime }) => ({
             coin: asset,
