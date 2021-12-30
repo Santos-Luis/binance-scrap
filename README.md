@@ -9,6 +9,15 @@ Get's top percentage values of binance staking
 ```
 
 ### Options
-- You can pass the max number of results you want: `npx ts-node get-top-values.ts 15` - (default is 10)
-- You can ask for only available stakings (not sold out): `npx ts-node get-top-values.ts --available` - default is false
-- You can join both previous option with the following order `15 --available`
+- You can pass the max number of results you want (default is 10):
+```
+> npx ts-node get-top-values.ts 15
+```
+- You can ask for only available stakings - not sold out - (default is false):
+```
+> npx ts-node get-top-values.ts --available
+```
+- You can join both previous option with the following order:
+```
+> npx ts-node get-top-values.ts 15 --available
+```
