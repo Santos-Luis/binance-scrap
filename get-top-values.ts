@@ -25,7 +25,13 @@ type Value = {
     apr: string;
 };
 
-async function getTopValues() {
+async function getTopValues({
+    maxValues,
+    onlyAvailable
+}: {
+    maxValues: number;
+    onlyAvailable: boolean;
+}) {
     const url = 'https://www.binance.com/bapi/earn/v1/friendly/pos/union';
 
     const stackingData = await fetch(url);
@@ -44,15 +50,28 @@ async function getTopValues() {
 
     const values = valuesPerProject.flat();
 
-    const sortedValues: Value[] = values
+    let sortedValues: Value[] = values
         .sort((i, j) => Number(j.apr) - Number(i.apr))
         .map((sortedValue) => ({
             ...sortedValue,
             apr: sortedValue.apr.toFixed() + '%',
         }));
 
-    console.log(sortedValues.slice(0, 11));
+
+    if (!onlyAvailable) {
+        console.log(sortedValues.slice(0, maxValues));
+
+        return;
+    }
+
+    const filteredValues = filterSoldOutValues(sortedValues);
+
+    console.log(filteredValues.slice(0, maxValues));
 };
+
+function filterSoldOutValues(values: Value[]): Value[] {
+    return values.filter(({ cb }) => cb === 'y');
+}
 
 function convertTimestampToDate(timestamp: string): string {
     const date = new Date(Number(timestamp));
@@ -62,4 +81,7 @@ function convertTimestampToDate(timestamp: string): string {
     return new Intl.DateTimeFormat('pt-PT', dateFormat as any).format(date);
 }
 
-getTopValues();
+const maxValues = Number(process.argv[2]) || 10;
+const onlyAvailable = process.argv.slice(2, 4).includes('--available');
+
+getTopValues({ maxValues, onlyAvailable });
